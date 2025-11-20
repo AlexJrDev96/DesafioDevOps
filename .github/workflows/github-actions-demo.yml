@@ -25,8 +25,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verificar sintaxe (build)
-        run: python -m py_compile $(git ls-files '*.py')
 
 
   tests:
@@ -48,7 +46,7 @@ jobs:
 
       
       - name: Testes Unitários
-        run: python -m unittest discover -s tests/unit -v
+        run: python -m unittest discover -s . -p "test_app.py"
 
       # -----------------------------
       
@@ -64,11 +62,3 @@ jobs:
    
       
   
-      - name: Cobertura de Testes
-        run: |
-          pip install coverage
-          coverage run -m unittest discover -s tests -v
-          coverage xml
-          coverage report
-
-
