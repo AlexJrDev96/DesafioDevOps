@@ -9,6 +9,10 @@ if not hasattr(werkzeug, '__version__'):
 class APITestCase(unittest.TestCase): 
     @classmethod 
 
+    def setUpClass(cls): 
+        # Criação do cliente de teste 
+        cls.client = app.test_client()
+
     def test_get_items(self):
         # Testa se a rota /items retorna a lista corretamente
         response = self.client.get('/items')
@@ -26,6 +30,7 @@ class APITestCase(unittest.TestCase):
         # A rota /items foi definida apenas com methods=['GET'] no app.py
         response = self.client.post('/items')
         self.assertEqual(response.status_code, 405)
+
     
    
 
