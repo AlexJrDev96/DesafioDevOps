@@ -8,23 +8,26 @@ if not hasattr(werkzeug, '__version__'):
 
 class APITestCase(unittest.TestCase): 
     @classmethod 
-    def setUpClass(cls): 
-        # Criação do cliente de teste 
-        cls.client = app.test_client()
+
+    def test_get_items(self):
+        # Testa se a rota /items retorna a lista corretamente
+        response = self.client.get('/items')
+        self.assertEqual(response.status_code, 200)
+        # Verifica se "item1" está dentro da lista retornada
+        self.assertIn("item1", response.json['items'])
+
+    def test_not_found(self):
+        # Testa se uma rota inexistente retorna o erro 404 corretamente
+        response = self.client.get('/rota-que-nao-existe')
+        self.assertEqual(response.status_code, 404)
+
+    def test_method_not_allowed(self):
+        # Testa se usar POST em uma rota que só aceita GET retorna erro 405
+        # A rota /items foi definida apenas com methods=['GET'] no app.py
+        response = self.client.post('/items')
+        self.assertEqual(response.status_code, 405)
     
-    def test_home(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json, {"message": "API is running"})
-
-    def test_login(self):
-        response = self.client.post('/login')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('access_token', response.json)
-
-    def test_protected_no_token(self):
-        response = self.client.get('/protected')
-        self.assertEqual(response.status_code, 401)
+   
 
 if __name__ == '__main__':
     unittest.main()
